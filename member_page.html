@@ -10,10 +10,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        
         * { box-sizing: border-box; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
         body, html { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
-        .snow { position: fixed; top: -10px; color: #fff; pointer-events: none; z-index: 5; }
         .home-trigger { position: fixed; top: 20px; right: 20px; z-index: 2000; cursor: pointer; opacity: 0.5; transition: 0.3s; color: #fff; font-size: 1.5rem; }
         .home-trigger:hover { opacity: 1; transform: scale(1.1); color: #3498db; }
         .admin-trigger { position: fixed; bottom: 30px; left: 20px; z-index: 2000; cursor: pointer; opacity: 0.1; transition: 0.5s; color: #fff; font-size: 1.5rem; }
@@ -86,11 +84,12 @@
     <div class="pagination" id="pagination"></div>
 
     <script>
-        // --- 1. FIREBASE CONFIG (เติมค่าของคุณที่นี่) ---
+        // --- 1. FIREBASE CONFIG ---
+        // ** สำคัญ: เปลี่ยน databaseURL ให้เป็นลิงก์จริงจากหน้า Firebase Console ของคุณ **
         const firebaseConfig = {
             apiKey: "AIzaSy...", 
             authDomain: "your-project.firebaseapp.com",
-            databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+            databaseURL: "https://your-project-default-rtdb.firebaseio.com", 
             projectId: "your-project",
             storageBucket: "your-project.appspot.com",
             messagingSenderId: "123456789",
@@ -100,7 +99,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-      
+        // Admin Security
         const _0xU = "QWRtaW4="; 
         const _0xP = "R09ETVlIWE5EV1RG"; 
         const _0xK = atob(_0xP); 
@@ -110,15 +109,14 @@
         const cardsPerPage = 12;
         let currentPage = 1;
 
-      
-
-        
+        // Fetch Data
         db.ref('winterfell_members').on('value', (snapshot) => {
             const data = snapshot.val();
             members = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
             render();
         });
 
+        // --- แก้ไขส่วนบันทึกข้อมูล ---
         function saveMember() {
             if (!isAdmin) return alert("สิทธิ์ Admin ไม่ถูกต้อง!");
             
@@ -132,10 +130,10 @@
             const id = mId || Date.now().toString();
             const btn = document.getElementById('saveBtn');
             
+            // เปลี่ยนสถานะปุ่ม
             btn.disabled = true;
             btn.innerText = "Saving...";
 
-            // ข้อมูลที่จะบันทึก (ต้องมี admin_token ให้ตรงกับ Rules ใน Firebase)
             const payload = {
                 name: mName,
                 fb: mFB,
@@ -143,13 +141,18 @@
                 admin_token: _0xK 
             };
 
+            // บันทึกข้อมูลพร้อมระบบดักจับ Error เพื่อป้องกันปุ่มค้าง
             db.ref('winterfell_members/' + id).set(payload)
             .then(() => {
                 alert("✅ บันทึกสำเร็จ!");
                 closeModal('memberModal');
             })
-            .catch(err => alert("❌ บันทึกไม่ได้: " + err.message))
+            .catch(err => {
+                console.error(err);
+                alert("❌ เกิดข้อผิดพลาด: " + err.message + "\nกรุณาเช็ก databaseURL ในโค้ด!");
+            })
             .finally(() => {
+                // ปลดล็อคปุ่มเสมอไม่ว่าจะสำเร็จหรือไม่
                 btn.disabled = false;
                 btn.innerText = "Save Member";
             });
@@ -160,6 +163,10 @@
             grid.innerHTML = "";
             const start = (currentPage - 1) * cardsPerPage;
             const items = members.slice(start, start + cardsPerPage);
+
+            if (items.length === 0) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; opacity:0.5;'>No members found.</p>";
+            }
 
             items.forEach(m => {
                 grid.innerHTML += `
@@ -177,13 +184,11 @@
         }
 
         function deleteMember(id) {
-            if (confirm("ยืนยันการลบ?")) {
-                
+            if (confirm("ยืนยันการลบสมาชิกนี้?")) {
                 db.ref('winterfell_members/' + id).remove();
             }
         }
 
-        
         function checkAuth() {
             const u = document.getElementById('loginUser').value;
             const p = document.getElementById('loginPass').value;
@@ -194,10 +199,16 @@
         }
 
         function logout() { localStorage.removeItem("adminMode"); location.reload(); }
+        
         function openAddModal() { 
             document.getElementById('mId').value = ""; 
+            document.getElementById('mName').value = "";
+            document.getElementById('mFB').value = "";
+            document.getElementById('mImg').value = "";
+            document.getElementById('modalTitle').innerText = "ADD NEW MEMBER";
             document.getElementById('memberModal').style.display = 'flex'; 
         }
+
         function openEditModal(id) {
             const m = members.find(x => x.id === id);
             if(m) {
@@ -205,9 +216,11 @@
                 document.getElementById('mName').value = m.name;
                 document.getElementById('mFB').value = m.fb;
                 document.getElementById('mImg').value = m.img;
+                document.getElementById('modalTitle').innerText = "EDIT MEMBER";
                 document.getElementById('memberModal').style.display = 'flex';
             }
         }
+
         function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
         function openLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -222,6 +235,7 @@
             const count = Math.ceil(members.length / cardsPerPage);
             const container = document.getElementById('pagination');
             container.innerHTML = "";
+            if (count <= 1) return;
             for (let i = 1; i <= count; i++) {
                 container.innerHTML += `<button class="page-btn ${i===currentPage?'active':''}" onclick="currentPage=${i};render();">${i}</button>`;
             }
@@ -230,9 +244,20 @@
         function handleSearch() {
             const q = document.getElementById('searchBar').value.toLowerCase();
             const filtered = members.filter(m => m.name.toLowerCase().includes(q));
-            
             const grid = document.getElementById('memberGrid');
-            grid.innerHTML = filtered.map(m => `<div class="member-card">...</div>`).join('');
+            
+            grid.innerHTML = filtered.map(m => `
+                <div class="member-card">
+                    ${isAdmin ? `<div class="admin-controls">
+                        <button class="edit-btn" onclick="openEditModal('${m.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="del-btn" onclick="deleteMember('${m.id}')"><i class="fas fa-trash"></i></button>
+                    </div>` : ''}
+                    <div class="img-wrapper"><img src="${m.img}" onerror="this.src='https://via.placeholder.com/120'"></div>
+                    <div class="name-text">${m.name}</div>
+                    <a href="${m.fb}" target="_blank" class="fb-btn">Facebook</a>
+                </div>
+            `).join('');
+            if (q === "") render();
         }
     </script>
 </body>
