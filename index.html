@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WINTERFELL GODMYHXND</title>
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        
+        * { 
+            box-sizing: border-box; 
+            -webkit-user-select: none;
+            -ms-user-select: none; 
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none; 
+        }
+        
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #000; color: #fff;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+
+       
+        #successOverlay, #logoutModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 5000; justify-content: center; align-items: center;
+        }
+        .check-container {
+            width: 100px; height: 100px; background: #2ecc71; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 30px rgba(46, 204, 113, 0.5);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+        }
+        .check-container i { font-size: 3.5rem; color: #fff; }
+        .custom-modal {
+            width: 90%; max-width: 400px; background: #0d0d0d; border-radius: 25px;
+            padding: 40px 30px; border-top: 4px solid #ff4b4b; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8); animation: popIn 0.3s ease-out;
+        }
+        .custom-modal h3 { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; letter-spacing: 1px; }
+        .custom-modal p { color: rgba(255, 255, 255, 0.4); margin-bottom: 30px; }
+        .modal-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .m-btn { padding: 16px; border-radius: 12px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+        .btn-logout { background: #ff4b4b; color: #fff; }
+        .btn-cancel { background: #1a1a1a; color: #fff; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+
+        .top-banner {
+            width: 100%; background-color: rgba(15, 15, 15, 0.95);
+            padding: 15px 0; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative; z-index: 100; backdrop-filter: blur(10px);
+        }
+        .top-banner h1 { margin: 0; font-size: 1.8rem; letter-spacing: 4px; font-weight: 900; text-transform: uppercase; }
+        .top-banner h2 { margin: 6px 0 0 0; font-size: 0.9rem; letter-spacing: 6px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; }
+
+        #loginPanel {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 4000; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .login-box {
+            width: 90%; max-width: 400px;
+            background: #0d0d0d;
+            padding: 50px 40px;
+            border-radius: 30px;
+            border: 1px solid #1a1a1a;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .login-box h3 { color: #fff; font-size: 1.2rem; font-weight: 800; margin: 0 0 35px 0; letter-spacing: 1px; text-transform: uppercase; }
+        .login-box input {
+            width: 100%; padding: 16px 20px; margin-bottom: 15px;
+            background: #121212; border: 1px solid #282828;
+            color: #fff; border-radius: 12px; outline: none;
+            font-size: 14px; transition: 0.3s;
+        }
+        .login-box input:focus { border-color: #444; background: #151515; }
+        .login-box .login-btn {
+            width: 100%; padding: 16px; margin-top: 10px;
+            background: #fff; color: #000; border: none;
+            border-radius: 12px; font-weight: 900; font-size: 15px;
+            cursor: pointer; text-transform: uppercase; transition: 0.3s;
+        }
+        .login-box .login-btn:hover { background: #ddd; transform: translateY(-2px); }
+        .login-box .cancel-text { margin-top: 25px; color: #444; font-size: 13px; cursor: pointer; text-decoration: none; }
+
+        #adminStatusBadge { 
+            position: fixed; top: 20px; left: 20px; z-index: 2001; 
+            background: rgba(46, 204, 113, 0.15); color: #2ecc71; 
+            padding: 10px 18px; border-radius: 12px; border: 1px solid rgba(46, 204, 113, 0.3); 
+            font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; 
+            cursor: pointer; display: none; backdrop-filter: blur(10px); 
+            transition: 0.3s; align-items: center; gap: 8px; 
+        }
+
+        .admin-trigger {
+            position: fixed; bottom: 10px; left: 10px; z-index: 999;
+            cursor: pointer; opacity: 0.1; transition: 0.5s; color: #fff;
+            padding: 20px; font-size: 2.5rem; 
+        }
+        .admin-trigger:hover { opacity: 0.8; transform: rotate(90deg); }
+
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; background-image: url('https://img2.pic.in.th/WTF_GMH-removebg-preview.png'); background-size: cover; background-position: center; }
+        .main-container::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1; }
+        .content-wrapper { position: relative; z-index: 10; width: 100%; max-width: 1100px; padding: 20px; margin-bottom: 50px; }
+        .menu-pyramid { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        .pyramid-row { display: flex; justify-content: center; gap: 30px; width: 100%; flex-wrap: wrap; }
+        .btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; color: #fff; padding: 22px 50px; text-decoration: none; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; transition: 0.4s; display: flex; align-items: center; justify-content: center; gap: 18px; backdrop-filter: blur(15px); cursor: pointer; min-width: 380px; text-transform: uppercase; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); }
+        .btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.5); transform: translateY(-8px); }
+
+        .social-float-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
+        .social-float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; text-decoration: none; box-shadow: 0 5px 20px rgba(0,0,0,0.8); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
+        .float-fb { background: #1877F2; }
+        .float-dc { background: #5865F2; }
+
+        .snowflake { position: fixed; top: -10px; color: #fff; pointer-events: none; z-index: 50; }
+        .footer-credit { width: 100%; padding: 15px; text-align: center; font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); text-transform: uppercase; margin-top: auto; z-index: 100; }
+        /* สไตล์เสริมสำหรับลิงก์ในเครดิต */
+        .footer-credit a { color: #fff; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body oncontextmenu="return false;"> 
+
+    <div id="successOverlay" onclick="location.reload()">
+        <div class="check-container"><i class="fas fa-check"></i></div>
+    </div>
+    <div id="logoutModal">
+        <div class="custom-modal">
+            <h3>LOGOUT SESSION?</h3>
+            <p>ออกจากโหมดแก้ไขใช่หรือไม่?</p>
+            <div class="modal-btns">
+                <button class="m-btn btn-logout" onclick="localStorage.removeItem('adminMode'); location.reload();">LOGOUT</button>
+                <button class="m-btn btn-cancel" onclick="document.getElementById('logoutModal').style.display='none'">CANCEL</button>
+            </div>
+        </div>
+    </div>
+    <div id="adminStatusBadge" onclick="document.getElementById('logoutModal').style.display='flex'">
+        <i class="fas fa-user-shield"></i> EDITING MODE
+    </div>
+
+    <div id="loginPanel">
+        <div class="login-box">
+            <h3>ADMIN ACCESS</h3>
+            <input type="text" id="adminUser" placeholder="Username" autocomplete="off">
+            <input type="password" id="adminPass" placeholder="Password">
+            <button class="login-btn" onclick="checkLogin()">LOGIN</button>
+            <div class="cancel-text" onclick="toggleLogin(false)">Cancel</div>
+        </div>
+    </div>
+
+    <div class="admin-trigger" id="loginTrigger" onclick="toggleLogin(true)">
+        <i class="fas fa-cog"></i>
+    </div>
+
+    <div class="top-banner">
+        <h1>WINTERFELL GODMYHXND</h1>
+        <h2>NEVERBROKE IN WINTERFELL</h2>
+    </div>
+
+    <div class="main-container">
+        <div class="content-wrapper">
+            <div class="menu-pyramid">
+                <div class="pyramid-row">
+                    <div class="btn" onclick="secureNav('Zm91bmRlcl9wYWdlLmh0bWw=')">
+                        <i class="fas fa-crown"></i>
+                        <span>FOUNDER WINTERFELL GODMYHXND</span>
+                    </div>
+                </div>
+                <div class="pyramid-row">
+                    <div class="btn" onclick="secureNav('bGVhZGVyX3BhZ2UuaHRtbA==')">
+                        <i class="fas fa-users"></i>
+                        <span>LEADER WINTERFELL GODMYHXND</span>
+                    </div>
+                    <div class="btn" onclick="secureNav('bWVtYmVyX3BhZ2UuaHRtbA==')">
+                        <i class="fas fa-star"></i>
+                        <span>MEMBER WINTERFELL GODMYHXND</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="social-float-container">
+        <a href="https://www.facebook.com/profile.php?id=61571770321692" target="_blank" class="social-float-btn float-fb"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://discord.gg/wu6EcBwJEF" target="_blank" class="social-float-btn float-dc"><i class="fab fa-discord"></i></a>
+    </div>
+
+    <footer class="footer-credit">
+        Designed by <a href="https://www.facebook.com/profile.php?id=61577571792218" target="_blank">AEGONX</a> • 
+        Powered by <a href="https://www.facebook.com/profile.php?id=61578063207491" target="_blank">KISSX</a><br>
+        © 2026 All Rights Reserved.
+    </footer>
+
+    <script>
+        // --- 🔒 ADVANCED SECURITY CORE ---
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S"))) {
+                e.preventDefault(); return false;
+            }
+        });
+
+        setInterval(function() {
+            if (localStorage.getItem("adminMode") !== "true") {
+                (function() { (function a() { try { (function b(i) { if (("" + (i / i)).length !== 1 || i % 20 === 0) { (function() {}).constructor("debugger")(); } else { debugger; } b(++i); })(0); } catch (e) { setTimeout(a, 5000); } })(); })();
+            }
+        }, 1000);
+
+        function toggleLogin(show) {
+            const panel = document.getElementById('loginPanel');
+            panel.style.display = show ? 'flex' : 'none';
+            if(show) document.getElementById('adminUser').focus();
+        }
+
+        function checkLogin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            if (user === "Admin" && pass === "GODMYHXNDWTF") {
+                localStorage.setItem("adminMode", "true");
+                document.getElementById('loginPanel').style.display = 'none';
+                document.getElementById('successOverlay').style.display = 'flex';
+            } else {
+                alert("INVALID CREDENTIALS.");
+                document.getElementById('adminPass').value = "";
+            }
+        }
+
+        if (localStorage.getItem("adminMode") === "true") {
+            document.getElementById("adminStatusBadge").style.display = "flex";
+            document.getElementById("loginTrigger").style.display = "none";
+        }
+
+        function secureNav(token) { try { window.location.href = atob(token); } catch(e) {} }
+
+        function createSnow() {
+            const snowflake = document.createElement('div');
+            snowflake.innerHTML = '❄';
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = Math.random() * window.innerWidth + 'px';
+            snowflake.style.fontSize = Math.random() * 8 + 4 + 'px';
+            document.body.appendChild(snowflake);
+            const anim = snowflake.animate([{ transform: 'translateY(0)', opacity: 0.7 }, { transform: 'translateY(105vh)', opacity: 0 }], { duration: (Math.random() * 4 + 5) * 1000, easing: 'linear' });
+            anim.onfinish = () => snowflake.remove();
+        }
+        setInterval(createSnow, 300);
+    </script>
+</body>
+</html>
