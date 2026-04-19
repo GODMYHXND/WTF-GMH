@@ -84,19 +84,21 @@
     <div class="pagination" id="pagination"></div>
 
     <script>
-        // --- 1. FIREBASE CONFIG ---
-        // ** สำคัญ: เปลี่ยน databaseURL ให้เป็นลิงก์จริงจากหน้า Firebase Console ของคุณ **
+        // --- 1. FIREBASE CONFIG (Updated with your real credentials) ---
         const firebaseConfig = {
-            apiKey: "AIzaSy...", 
-            authDomain: "your-project.firebaseapp.com",
-            databaseURL: "https://your-project-default-rtdb.firebaseio.com", 
-            projectId: "your-project",
-            storageBucket: "your-project.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abc123"
+            apiKey: "AIzaSyATUu8N24VHWxj67sbyw6pBttGmyut2rY0", 
+            authDomain: "winterfell-database.firebaseapp.com",
+            databaseURL: "https://winterfell-database-default-rtdb.asia-southeast1.firebasedatabase.app/", 
+            projectId: "winterfell-database",
+            storageBucket: "winterfell-database.firebasestorage.app",
+            messagingSenderId: "779335224278",
+            appId: "1:779335224278:web:55a5faf89f4284fffe7277",
+            measurementId: "G-4N379CJMVY"
         };
         
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const db = firebase.database();
 
         // Admin Security
@@ -116,7 +118,6 @@
             render();
         });
 
-        // --- แก้ไขส่วนบันทึกข้อมูล ---
         function saveMember() {
             if (!isAdmin) return alert("สิทธิ์ Admin ไม่ถูกต้อง!");
             
@@ -130,7 +131,6 @@
             const id = mId || Date.now().toString();
             const btn = document.getElementById('saveBtn');
             
-            // เปลี่ยนสถานะปุ่ม
             btn.disabled = true;
             btn.innerText = "Saving...";
 
@@ -141,7 +141,6 @@
                 admin_token: _0xK 
             };
 
-            // บันทึกข้อมูลพร้อมระบบดักจับ Error เพื่อป้องกันปุ่มค้าง
             db.ref('winterfell_members/' + id).set(payload)
             .then(() => {
                 alert("✅ บันทึกสำเร็จ!");
@@ -149,10 +148,9 @@
             })
             .catch(err => {
                 console.error(err);
-                alert("❌ เกิดข้อผิดพลาด: " + err.message + "\nกรุณาเช็ก databaseURL ในโค้ด!");
+                alert("❌ เกิดข้อผิดพลาด: " + err.message + "\nอย่าลืมเช็ค Rules ใน Firebase!");
             })
             .finally(() => {
-                // ปลดล็อคปุ่มเสมอไม่ว่าจะสำเร็จหรือไม่
                 btn.disabled = false;
                 btn.innerText = "Save Member";
             });
