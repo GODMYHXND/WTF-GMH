@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINTERFELL GODMYHXND - OFFICIAL</title>
+    <title>WINTERFELL GODMYHXND - OFFICIAL  </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -15,7 +15,7 @@
         body, html { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
         .snow { position: fixed; top: -10px; color: #fff; pointer-events: none; z-index: 5; }
 
-       
+        
         .toast-notify {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
             padding: 15px 30px; border-radius: 50px; background: rgba(0,0,0,0.9);
@@ -121,7 +121,7 @@
             document.getElementById('loginPass').value = "";
         };
 
-        
+       
         function showToast(type) {
             const toast = document.getElementById('toastNotify');
             const icon = document.getElementById('toastIcon');
@@ -135,7 +135,7 @@
         
         document.addEventListener('keydown', function(e) { if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(e.keyCode)) || (e.ctrlKey && e.keyCode === 85)) { e.preventDefault(); return false; } });
 
-        
+       
         const firebaseConfig = {
             apiKey: "AIzaSyATUu8N24VHWxj67sbyw6pBttGmyut2rY0",
             authDomain: "winterfell-database.firebaseapp.com",
@@ -153,12 +153,14 @@
         const cardsPerPage = 12;
         let currentPage = 1;
 
+        
         db.ref('winterfell_founder_db').on('value', (snap) => {
             const data = snap.val();
             members = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })).reverse() : [];
             render();
         });
 
+       
         function render() {
             const grid = document.getElementById('memberGrid');
             grid.innerHTML = "";
@@ -220,10 +222,15 @@
             }
         }
 
+        
         function saveMember() {
             const id = document.getElementById('mId').value;
-            const data = { name: document.getElementById('mName').value, fb: document.getElementById('mFB').value, img: document.getElementById('mImg').value || "https://via.placeholder.com/120" };
-            if (!data.name || !data.fb) return alert("Please fill info");
+            const data = { 
+                name: document.getElementById('mName').value, 
+                fb: document.getElementById('mFB').value, 
+                img: document.getElementById('mImg').value || "https://via.placeholder.com/120" 
+            };
+            if (!data.name || !data.fb) return alert("กรุณากรอกชื่อและลิงก์ Facebook");
             if (id) {
                 db.ref('winterfell_founder_db/' + id).set(data).then(() => { showToast('edit'); });
             } else {
@@ -237,15 +244,36 @@
             closeModal('deleteModal');
         }
 
+       
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
         function openLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
         function openAddModal() { document.getElementById('modalTitle').innerText = "ADD FOUNDER"; document.getElementById('mId').value = ""; document.getElementById('memberModal').style.display = 'flex'; }
         function openEditModal(id) { const m = members.find(x => x.id === id); document.getElementById('mId').value = m.id; document.getElementById('mName').value = m.name; document.getElementById('mFB').value = m.fb; document.getElementById('mImg').value = m.img; document.getElementById('memberModal').style.display = 'flex'; }
         function openDeleteModal(id, name) { document.getElementById('deleteTargetId').value = id; document.getElementById('deleteMemberName').innerText = name; document.getElementById('deleteModal').style.display = 'flex'; }
+        
+       
         function logout() { localStorage.removeItem("adminMode"); location.reload(); }
-        function checkAuth() { if (btoa(document.getElementById('loginUser').value) === "QWRtaW4=" && btoa(document.getElementById('loginPass').value) === "R09ETVlIWE5EV1RG") { localStorage.setItem("adminMode", "true"); location.reload(); } else alert("DENIED"); }
-        if (isAdmin) { document.getElementById('addBtn').style.display = 'flex'; document.getElementById('loginToggleBtn').style.display = 'none'; document.getElementById('adminStatusBadge').style.display = 'flex'; }
+        
+        function checkAuth() { 
+            const u = document.getElementById('loginUser').value;
+            const p = document.getElementById('loginPass').value;
+            
+            if (u === "Admin" && p === "GODMYHXNDWTF") { 
+                localStorage.setItem("adminMode", "true"); 
+                location.reload(); 
+            } else { 
+                alert("ACCESS DENIED"); 
+            } 
+        }
+
+        if (isAdmin) { 
+            document.getElementById('addBtn').style.display = 'flex'; 
+            document.getElementById('loginToggleBtn').style.display = 'none'; 
+            document.getElementById('adminStatusBadge').style.display = 'flex'; 
+        }
+
+        // --- SNOW EFFECT ---
         function createSnow() { const snow = document.createElement('div'); snow.innerHTML = '❄'; snow.className = 'snow'; snow.style.left = Math.random() * window.innerWidth + 'px'; snow.style.fontSize = Math.random() * 10 + 10 + 'px'; document.body.appendChild(snow); const anim = snow.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(105vh)', opacity: 0 }], { duration: 5000 + Math.random() * 3000 }); anim.onfinish = () => snow.remove(); }
         setInterval(createSnow, 400);
     </script>
