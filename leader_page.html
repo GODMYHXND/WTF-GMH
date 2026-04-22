@@ -10,12 +10,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        
         * { box-sizing: border-box; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
         body, html { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
         .snow { position: fixed; top: -10px; color: #fff; pointer-events: none; z-index: 5; }
 
-        
         .toast-notify {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
             padding: 15px 30px; border-radius: 50px; background: rgba(0,0,0,0.9);
@@ -26,7 +24,6 @@
         .toast-notify.active { top: 30px; }
         .toast-icon { font-size: 1.5rem; animation: iconBounce 0.5s ease infinite alternate; }
         @keyframes iconBounce { from { transform: scale(1); } to { transform: scale(1.2); } }
-        
         
         .home-trigger { position: fixed; top: 20px; right: 20px; z-index: 2000; cursor: pointer; opacity: 0.5; transition: 0.3s; color: #fff; font-size: 1.5rem; }
         .home-trigger:hover { opacity: 1; transform: scale(1.1); color: #3498db; }
@@ -149,7 +146,6 @@
         const cardsPerPage = 12;
         let currentPage = 1;
 
-        
         db.ref('winterfell_leader_db').on('value', (snap) => {
             const data = snap.val();
             members = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })).reverse() : [];
@@ -240,7 +236,18 @@
         function openEditModal(id) { const m = members.find(x => x.id === id); document.getElementById('mId').value = m.id; document.getElementById('mName').value = m.name; document.getElementById('mFB').value = m.fb; document.getElementById('mImg').value = m.img; document.getElementById('memberModal').style.display = 'flex'; }
         function openDeleteModal(id, name) { document.getElementById('deleteTargetId').value = id; document.getElementById('deleteMemberName').innerText = name; document.getElementById('deleteModal').style.display = 'flex'; }
         function logout() { localStorage.removeItem("adminMode"); location.reload(); }
-        function checkAuth() { if (btoa(document.getElementById('loginUser').value) === "QWRtaW4=" && btoa(document.getElementById('loginPass').value) === "R09ETVlIWE5EV1RG") { localStorage.setItem("adminMode", "true"); location.reload(); } else alert("DENIED"); }
+
+        function checkAuth() { 
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            if (user === "Admin" && pass === "GODMYHXNDWTF") { 
+                localStorage.setItem("adminMode", "true"); 
+                location.reload(); 
+            } else {
+                alert("Username หรือ Password ไม่ถูกต้อง!");
+            }
+        }
+
         if (isAdmin) { document.getElementById('addBtn').style.display = 'flex'; document.getElementById('loginToggleBtn').style.display = 'none'; document.getElementById('adminStatusBadge').style.display = 'flex'; }
         function createSnow() { const snow = document.createElement('div'); snow.innerHTML = '❄'; snow.className = 'snow'; snow.style.left = Math.random() * window.innerWidth + 'px'; snow.style.fontSize = Math.random() * 10 + 10 + 'px'; document.body.appendChild(snow); const anim = snow.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(105vh)', opacity: 0 }], { duration: 5000 + Math.random() * 3000 }); anim.onfinish = () => snow.remove(); }
         setInterval(createSnow, 400);
