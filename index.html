@@ -127,7 +127,7 @@
 
         .snowflake { position: fixed; top: -10px; color: #fff; pointer-events: none; z-index: 50; }
         .footer-credit { width: 100%; padding: 15px; text-align: center; font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); text-transform: uppercase; margin-top: auto; z-index: 100; }
-        /* สไตล์เสริมสำหรับลิงก์ในเครดิต */
+       
         .footer-credit a { color: #fff; text-decoration: none; font-weight: bold; }
     </style>
 </head>
@@ -204,7 +204,7 @@
     </footer>
 
     <script>
-        // --- 🔒 ADVANCED SECURITY CORE ---
+        
         document.addEventListener('keydown', function(e) {
             if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S"))) {
                 e.preventDefault(); return false;
@@ -223,10 +223,17 @@
             if(show) document.getElementById('adminUser').focus();
         }
 
+        
         function checkLogin() {
+            const _0x5f21 = (s) => btoa(s.split('').reverse().join(''));
             const user = document.getElementById('adminUser').value;
             const pass = document.getElementById('adminPass').value;
-            if (user === "Admin" && pass === "GODMYHXNDWTF") {
+            
+            
+            const _0x11 = "bmltZEE="; 
+            const _0x22 = "RlRXTlhITVlET0dWRlI="; /
+
+            if (_0x5f21(user) === _0x11 && _0x5f21(pass) === _0x22) {
                 localStorage.setItem("adminMode", "true");
                 document.getElementById('loginPanel').style.display = 'none';
                 document.getElementById('successOverlay').style.display = 'flex';
