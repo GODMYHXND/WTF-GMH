@@ -7,7 +7,6 @@
     <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        
         * { 
             box-sizing: border-box; 
             -webkit-user-select: none;
@@ -25,7 +24,6 @@
             overflow: hidden; display: flex; flex-direction: column;
         }
 
-       
         #successOverlay, #logoutModal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9); z-index: 5000; justify-content: center; align-items: center;
@@ -49,7 +47,6 @@
         .btn-logout { background: #ff4b4b; color: #fff; }
         .btn-cancel { background: #1a1a1a; color: #fff; }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        
 
         .top-banner {
             width: 100%; background-color: rgba(15, 15, 15, 0.95);
@@ -127,7 +124,6 @@
 
         .snowflake { position: fixed; top: -10px; color: #fff; pointer-events: none; z-index: 50; }
         .footer-credit { width: 100%; padding: 15px; text-align: center; font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); text-transform: uppercase; margin-top: auto; z-index: 100; }
-       
         .footer-credit a { color: #fff; text-decoration: none; font-weight: bold; }
     </style>
 </head>
@@ -206,16 +202,10 @@
     <script>
         
         document.addEventListener('keydown', function(e) {
-            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S"))) {
-                e.preventDefault(); return false;
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C"))) {
+                e.preventDefault();
             }
         });
-
-        setInterval(function() {
-            if (localStorage.getItem("adminMode") !== "true") {
-                (function() { (function a() { try { (function b(i) { if (("" + (i / i)).length !== 1 || i % 20 === 0) { (function() {}).constructor("debugger")(); } else { debugger; } b(++i); })(0); } catch (e) { setTimeout(a, 5000); } })(); })();
-            }
-        }, 1000);
 
         function toggleLogin(show) {
             const panel = document.getElementById('loginPanel');
@@ -225,20 +215,16 @@
 
         
         function checkLogin() {
-            const _0x5f21 = (s) => btoa(s.split('').reverse().join(''));
-            const user = document.getElementById('adminUser').value;
-            const pass = document.getElementById('adminPass').value;
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
             
             
-            const _0x11 = "bmltZEE="; 
-            const _0x22 = "RlRXTlhITVlET0dWRlI="; /
-
-            if (_0x5f21(user) === _0x11 && _0x5f21(pass) === _0x22) {
+            if (user === "Admin" && pass === "GODMYHXNDWTF") {
                 localStorage.setItem("adminMode", "true");
                 document.getElementById('loginPanel').style.display = 'none';
                 document.getElementById('successOverlay').style.display = 'flex';
             } else {
-                alert("INVALID CREDENTIALS.");
+                alert("Username หรือ Password ไม่ถูกต้อง!");
                 document.getElementById('adminPass').value = "";
             }
         }
